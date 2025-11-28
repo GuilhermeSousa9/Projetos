@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz de Conhecimento Geral</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .nivel-btn {
+            width: 100%;
+            padding: 20px;
+            margin: 15px 0;
+            font-size: 1.3em;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: white;
+        }
+
+        .nivel-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .facil {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+        }
+
+        .medio {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .dificil {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .progresso {
+            margin-bottom: 30px;
+        }
+
+        .progresso-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .barra-progresso {
+            width: 100%;
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .barra-progresso-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s;
+        }
+
+        .pergunta {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 30px;
+            line-height: 1.4;
+        }
+
+        .resposta-btn {
+            width: 100%;
+            padding: 18px;
+            margin: 10px 0;
+            font-size: 1.1em;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+
+        .resposta-btn:hover:not(:disabled) {
+            background: #f5f5f5;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .resposta-btn:disabled {
+            cursor: not-allowed;
+        }
+
+        .resposta-btn.correta {
+            background: #4caf50;
+            color: white;
+            border-color: #4caf50;
+        }
+
+        .resposta-btn.errada {
+            background: #f44336;
+            color: white;
+            border-color: #f44336;
+        }
+
+        .pontuacao {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: #666;
+        }
+
+        .pontuacao span {
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .resultado {
+            text-align: center;
+        }
+
+        .resultado-emoji {
+            font-size: 5em;
+            margin: 20px 0;
+        }
+
+        .resultado h2 {
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .resultado-pontos {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .resultado-mensagem {
+            font-size: 1.5em;
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .reiniciar-btn {
+            padding: 18px 40px;
+            font-size: 1.2em;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .reiniciar-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .icon {
+            font-size: 3em;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Tela de Seleção de Nível -->
+        <div id="telaInicial">
+            <div class="header">
+                <img src="didacio.png" alt="Logo CETI Didácio Silva" style="max-width: 250px; margin-bottom: 20px;">
+                <h1>Quiz de Conhecimento Geral</h1>
+                <p>Escolha seu nível e teste seus conhecimentos!</p>
+            </div>
+            <button class="nivel-btn facil" onclick="iniciarQuiz('facil')">
+                😊 Fácil
+            </button>
+            <button class="nivel-btn medio" onclick="iniciarQuiz('medio')">
+                🤔 Médio
+            </button>
+            <button class="nivel-btn dificil" onclick="iniciarQuiz('dificil')">
+                🔥 Difícil
+            </button>
+        </div>
+
+        <!-- Tela do Quiz -->
+        <div id="telaQuiz" class="hidden">
+            <div class="progresso">
+                <div class="progresso-info">
+                    <span id="nivelAtual"></span>
+                    <span id="numeroPergunta"></span>
+                </div>
+                <div class="barra-progresso">
+                    <div class="barra-progresso-fill" id="barraProgresso"></div>
+                </div>
+            </div>
+            
+            <div class="pergunta" id="perguntaTexto"></div>
+            
+            <div id="respostasContainer"></div>
+            
+            <div class="pontuacao">
+                Pontuação: <span id="pontuacaoAtual">0</span>
+            </div>
+        </div>
+
+        <!-- Tela de Resultado -->
+        <div id="telaResultado" class="hidden">
+            <div class="resultado">
+                <h2>Quiz Finalizado!</h2>
+                <div class="resultado-emoji" id="resultadoEmoji"></div>
+                <div class="resultado-mensagem" id="resultadoMensagem"></div>
+                <div class="resultado-pontos" id="resultadoPontos"></div>
+                <button class="reiniciar-btn" onclick="reiniciar()">
+                    🔄 Jogar Novamente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const quizData = {
+            facil: [
+                {
+                    pergunta: "Qual é a capital do Brasil?",
+                    respostas: ["São Paulo", "Brasília", "Salvador", "Fortaleza"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Quantos continentes existem no mundo?",
+                    respostas: ["Cinco continentes", "Seis continentes", "Sete continentes", "Oito continentes"],
+                    correta: 2
+                },
+                {
+                    pergunta: "Qual o maior planeta do sistema solar?",
+                    respostas: ["Saturno", "Netuno", "Júpiter", "Urano"],
+                    correta: 2
+                },
+                {
+                    pergunta: "Quem pintou a Mona Lisa?",
+                    respostas: ["Pablo Picasso", "Vincent van Gogh", "Leonardo da Vinci", "Claude Monet"],
+                    correta: 2
+                },
+                {
+                    pergunta: "Qual é o oceano mais extenso?",
+                    respostas: ["Oceano Atlântico", "Oceano Pacífico", "Oceano Índico", "Oceano Ártico"],
+                    correta: 1
+                }
+            ],
+            medio: [
+                {
+                    pergunta: "Em que ano ocorreu a Proclamação da República no Brasil?",
+                    respostas: ["1822", "1889", "1891", "1898"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Qual é o elemento químico representado pelo símbolo 'Au'?",
+                    respostas: ["Prata", "Ouro", "Cobre", "Ferro"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Quem escreveu 'Dom Casmurro'?",
+                    respostas: ["José de Alencar", "Machado de Assis", "Castro Alves", "Olavo Bilac"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Qual a velocidade aproximada da luz no vácuo?",
+                    respostas: ["150.000 km/s", "300.000 km/s", "450.000 km/s", "600.000 km/s"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Qual país sediou a primeira Copa do Mundo de Futebol?",
+                    respostas: ["Brasil", "Uruguai", "Argentina", "Itália"],
+                    correta: 1
+                }
+            ],
+            dificil: [
+                {
+                    pergunta: "Qual é a menor partícula de um elemento que mantém suas propriedades?",
+                    respostas: ["A molécula", "O átomo", "O próton", "O elétron"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Em que ano foi assinado o Tratado de Tordesilhas?",
+                    respostas: ["1492", "1494", "1498", "1500"],
+                    correta: 1
+                },
+                {
+                    pergunta: "Qual filósofo grego foi mestre de Alexandre, o Grande?",
+                    respostas: ["Sócrates", "Platão", "Aristóteles", "Pitágoras"],
+                    correta: 2
+                },
+                {
+                    pergunta: "Quem é o inventor da Ferrari?",
+                    respostas: ["Franchesco Ferrari", "Mike Ferrari", "Michael Ferrari", "Enzo Ferrari"],
+                    correta: 3
+                },
+                {
+                    pergunta: "Quantos ossos tem o corpo humano adulto?",
+                    respostas: ["186 ossos", "206 ossos", "226 ossos", "246 ossos"],
+                    correta: 1
+                }
+            ]
+        };
+
+        let nivelAtual = null;
+        let perguntaAtual = 0;
+        let pontuacao = 0;
+        let perguntas = [];
+
+        function iniciarQuiz(nivel) {
+            nivelAtual = nivel;
+            perguntas = quizData[nivel];
+            perguntaAtual = 0;
+            pontuacao = 0;
+
+            document.getElementById('telaInicial').classList.add('hidden');
+            document.getElementById('telaQuiz').classList.remove('hidden');
+            document.getElementById('telaResultado').classList.add('hidden');
+
+            mostrarPergunta();
+        }
+
+        function mostrarPergunta() {
+            const pergunta = perguntas[perguntaAtual];
+            
+            document.getElementById('nivelAtual').textContent = 'Nível: ' + nivelAtual.toUpperCase();
+            document.getElementById('numeroPergunta').textContent = 'Pergunta ' + (perguntaAtual + 1) + ' / ' + perguntas.length;
+            document.getElementById('perguntaTexto').textContent = pergunta.pergunta;
+            document.getElementById('pontuacaoAtual').textContent = pontuacao;
+            
+            const progresso = ((perguntaAtual + 1) / perguntas.length) * 100;
+            document.getElementById('barraProgresso').style.width = progresso + '%';
+
+            const container = document.getElementById('respostasContainer');
+            container.innerHTML = '';
+
+            pergunta.respostas.forEach((resposta, indice) => {
+                const btn = document.createElement('button');
+                btn.className = 'resposta-btn';
+                btn.textContent = resposta;
+                btn.onclick = () => verificarResposta(indice);
+                container.appendChild(btn);
+            });
+        }
+
+        function verificarResposta(indice) {
+            const pergunta = perguntas[perguntaAtual];
+            const botoes = document.querySelectorAll('.resposta-btn');
+            
+            botoes.forEach(btn => btn.disabled = true);
+
+            if (indice === pergunta.correta) {
+                botoes[indice].classList.add('correta');
+                pontuacao++;
+            } else {
+                botoes[indice].classList.add('errada');
+                botoes[pergunta.correta].classList.add('correta');
+            }
+
+            document.getElementById('pontuacaoAtual').textContent = pontuacao;
+
+            setTimeout(() => {
+                if (perguntaAtual + 1 < perguntas.length) {
+                    perguntaAtual++;
+                    mostrarPergunta();
+                } else {
+                    mostrarResultado();
+                }
+            }, 1500);
+        }
+
+        function mostrarResultado() {
+            document.getElementById('telaQuiz').classList.add('hidden');
+            document.getElementById('telaResultado').classList.remove('hidden');
+
+            const porcentagem = (pontuacao / perguntas.length) * 100;
+            let mensagem = '';
+            let emoji = '';
+
+            if (porcentagem === 100) {
+                mensagem = 'Perfeito! Você é um gênio!';
+                emoji = '🏆';
+            } else if (porcentagem >= 80) {
+                mensagem = 'Excelente! Muito bem!';
+                emoji = '🌟';
+            } else if (porcentagem >= 60) {
+                mensagem = 'Bom trabalho! Continue assim!';
+                emoji = '👍';
+            } else if (porcentagem >= 40) {
+                mensagem = 'Pode melhorar! Tente novamente!';
+                emoji = '💪';
+            } else {
+                mensagem = 'Não desista! Estude mais e tente de novo!';
+                emoji = '📚';
+            }
+
+            document.getElementById('resultadoEmoji').textContent = emoji;
+            document.getElementById('resultadoMensagem').textContent = mensagem;
+            document.getElementById('resultadoPontos').textContent = pontuacao + ' / ' + perguntas.length;
+        }
+
+        function reiniciar() {
+            nivelAtual = null;
+            perguntaAtual = 0;
+            pontuacao = 0;
+
+            document.getElementById('telaInicial').classList.remove('hidden');
+            document.getElementById('telaQuiz').classList.add('hidden');
+            document.getElementById('telaResultado').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
