@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Relógio</title>
+
+<style>
+    body {
+        margin: 0;
+        background: #04060d;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Orbitron', sans-serif;
+        overflow: hidden;
+        position: relative;
+    }
+
+.circuit {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(0, 255, 255, 0.05) 0px,
+            rgba(0, 255, 255, 0.05) 2px,
+            transparent 2px,
+            transparent 40px
+        ),
+        repeating-linear-gradient(
+            0deg,
+             rgba(0, 255, 255, 0.04) 0px,
+             rgba(0, 255, 255, 0.04) 2px,
+            transparent 2px,
+            transparent 30px
+        );
+    animation: circuitMove 15s linear infinite;
+    z-index: -1;
+}
+
+.circuit {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background:
+        repeating-linear-gradient(
+            90deg,
+            rgba(0, 255, 255, 0.05) 0px,
+            rgba(0, 255, 255, 0.05) 2px,
+            transparent 2px,
+            transparent 40px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            rgba(0, 255, 255, 0.04) 0px,
+            rgba(0, 255, 255, 0.04) 2px,
+            transparent 2px,
+            transparent 30px
+        );
+    animation: circuitMove 12s linear infinite;
+    z-index: -1;
+}
+
+
+@keyframes circuitMove {
+    0% {
+        background-position: 0 0, 0 0;
+    }
+    100% {
+        background-position: -300px -300px, -200px -200px;
+    }
+}
+
+    /* --- BARRAS LATERAIS PULSANDO --- */
+    .side-bar {
+        position: absolute;
+        top: 0;
+        width: 6px;
+        height: 100vh;
+        background: linear-gradient(to bottom, transparent, currentColor, transparent);
+        box-shadow: 0 0 25px currentColor;
+        opacity: 0.6;
+        transition: 0.2s;
+    }
+
+    #leftBar  { left: 30px; color: #00eaff; }
+    #rightBar { right: 30px; color: #00eaff; }
+
+    .pulse {
+        box-shadow: 0 0 45px currentColor;
+        opacity: 1;
+    }
+
+    /* --- PAINEL HUD --- */
+    .hud {
+        padding: 50px 70px;
+        border: 4px solid #00eaff;
+        border-radius: 18px;
+        background: rgba(0, 12, 25, 0.55);
+        box-shadow: 
+            0 0 25px #00eaff,
+            inset 0 0 25px #00eaff;
+        position: relative;
+        text-align: center;
+        color: #00eaff;
+        transition: all 0.3s ease;
+        animation: slightPulse 3s infinite;
+        margin-bottom: 40px;
+        overflow: hidden;
+    }
+
+    @keyframes slightPulse {
+        0% { box-shadow: 0 0 25px currentColor, inset 0 0 25px currentColor; }
+        50% { box-shadow: 0 0 40px currentColor, inset 0 0 40px currentColor; }
+        100% { box-shadow: 0 0 25px currentColor, inset 0 0 25px currentColor; }
+    }
+
+    /* RELÓGIO */
+    #clock {
+        font-size: 105px;
+        font-weight: bold;
+        text-shadow:
+            0 0 15px currentColor,
+            0 0 35px currentColor,
+            0 0 80px currentColor;
+        letter-spacing: 5px;
+    }
+
+    /* DATA */
+    #date {
+        margin-top: 12px;
+        font-size: 22px;
+        opacity: 0.9;
+        text-shadow:
+            0 0 8px currentColor,
+            0 0 20px currentColor;
+    }
+
+    /* BOTÕES */
+    .buttons {
+        display: flex;
+        justify-content: center;
+        gap: 18px;
+    }
+
+    .color-btn {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
+        border: 3px solid #ffffff22;
+        background: radial-gradient(circle, #ffffff22 10%, transparent 90%);
+        cursor: pointer;
+        transition: 0.3s;
+        position: relative;
+        box-shadow: 0 0 8px #000;
+    }
+
+    .color-btn:hover {
+        transform: scale(1.25);
+        box-shadow: 0 0 20px currentColor;
+    }
+
+    .color-btn::after {
+        content: "";
+        position: absolute;
+        inset: 5px;
+        border-radius: 50%;
+        background: var(--c);
+        filter: blur(3px);
+        box-shadow:
+            0 0 15px var(--c),
+            0 0 30px var(--c);
+    }
+</style>
+</head>
+<body>
+
+<!-- Fundo com circuitos animados -->
+<div class="circuit"></div>
+
+<!-- Barras laterais -->
+<div id="leftBar" class="side-bar"></div>
+<div id="rightBar" class="side-bar"></div>
+
+<div class="hud" id="hud">
+    <div class="scan-line" id="scan"></div>
+    <div id="clock">00:00:00</div>
+    <div id="date">Carregando...</div>
+</div>
+
+<div class="buttons">
+    <button class="color-btn" style="--c:#00eaff;" onclick="changeHUD('#00eaff')"></button>
+    <button class="color-btn" style="--c:#ff009d;" onclick="changeHUD('#ff009d')"></button>
+    <button class="color-btn" style="--c:#ffea00;" onclick="changeHUD('#ffea00')"></button>
+    <button class="color-btn" style="--c:#39ff14;" onclick="changeHUD('#39ff14')"></button>
+    <button class="color-btn" style="--c:#ff2a00;" onclick="changeHUD('#ff2a00')"></button>
+    <button class="color-btn" style="--c:#9d00ff;" onclick="changeHUD('#9d00ff')"></button>
+</div>
+
+<!-- SOM FUTURISTA -->
+<audio id="beep" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+<script>
+    /* RELÓGIO TEMPO REAL */
+    function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById("clock").textContent = `${h}:${m}:${s}`;
+
+        const options = { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' };
+        document.getElementById("date").textContent = now.toLocaleDateString('pt-BR', options);
+
+        pulseBars(); // pulsar barras cada segundo
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    /* EFETUAR PULSO DAS BARRAS */
+    function pulseBars() {
+        const left = document.getElementById("leftBar");
+        const right = document.getElementById("rightBar");
+
+        left.classList.add("pulse");
+        right.classList.add("pulse");
+
+        setTimeout(() => {
+            left.classList.remove("pulse");
+            right.classList.remove("pulse");
+        }, 300);
+    }
+
+    /* MUDAR COR DO HUD + BARRAS + CIRCUITOS + SOM */
+    function changeHUD(color) {
+        const hud = document.getElementById("hud");
+        const left = document.getElementById("leftBar");
+        const right = document.getElementById("rightBar");
+        const circuit = document.querySelector(".circuit");
+
+        hud.style.color = color;
+        hud.style.borderColor = color;
+        hud.style.boxShadow = `0 0 25px ${color}, inset 0 0 25px ${color}`;
+
+        left.style.color = color;
+        right.style.color = color;
+
+        circuit.style.filter = `drop-shadow(0 0 12px ${color})`;
+
+        document.getElementById("beep").play(); // som ao trocar a cor
+    }
+</script>
+
+</body>
+</html>
