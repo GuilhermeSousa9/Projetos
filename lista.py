@@ -13,7 +13,7 @@ while True:
         tarefa = input("Digite a tarefa: ")
         tarefas.append(tarefa)
         print("Tarefa adicionada!")
-
+ 
     elif opcao == "2":
         if len(tarefas) == 0:
             print("Nenhuma tarefa cadastrada.")
